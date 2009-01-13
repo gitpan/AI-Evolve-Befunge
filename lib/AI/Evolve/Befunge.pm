@@ -2,7 +2,7 @@ package AI::Evolve::Befunge;
 use strict;
 use warnings;
 
-our $VERSION = "0.01";
+our $VERSION = "0.02";
 
 =head1 NAME
 
@@ -31,6 +31,10 @@ our $VERSION = "0.01";
 
 This software project provides all of the necessary tools to grow a
 population of AI creatures which are fit to perform a task.
+
+Normally, end users can use the "evolve" script as a frontend.  If
+that's what you're after, please see the documentation contained
+within that script.  Otherwise, read on.
 
 This particular file (AI/Evolve/Befunge.pm) does not contain any code;
 it exists mainly to provide a version number to keep Build.PL happy.
@@ -69,43 +73,11 @@ spawning a thread) all take a certain number of tokens to accomplish.
 When the number of tokens drops to 0, the critter dies.  So it had
 better accomplish its task before that happens.
 
-After a population fights eachother for a while, the winners are
-chosen (who continue to live) and everyone else dies.  Then a new
-population is generated from the winners, some random mutation (random
+After a population fights it out for a while, the winners are chosen
+(who continue to live) and everyone else dies.  Then a new population
+is generated from the winners, some random mutation (random
 generation of code, as well as potentially resizing the codebase)
 occurs, and the whole process starts over for the next generation.
-
-
-=head1 MIGRATION
-
-Further performance may be improved through the use of migration.
-
-Migration is a very simple form of parallel processing.  It is a very
-effective means of increasing performance.
-
-The idea is, you run multiple populations on multiple machines (one per
-machine).  The only requirement is that each Population has a different
-"hostname" setting.  And that's not really a requirement, it's just useful
-for tracking down which host a critter came from.
-
-When a Population object has finished processing a generation, there is
-a chance that one or more (up to 3) of the surviving critters will be
-written out to a special directory (which acts as an "outbox").
-
-A separate networking program may pick up these critters and broadcast
-them to some or all of the other nodes in a cluster (deleting them from
-the "outbox" folder at the same time).  The instances of this networking
-program on the other nodes will receive them, and write them out to
-another special directory (which acts as an "inbox").
-
-When a Population object has finished processing a generation, another
-thing it does is checks the "inbox" directory for any new incoming
-critters.  If they are detected, they are imported into the population
-(and deleted from the "inbox").
-
-Imported critters will compete in the next generation.  If they win,
-they will be involved in the reproduction process and may contribute to
-the local gene pool.
 
 
 =head1 PHYSICS
@@ -138,6 +110,44 @@ distribution.  They are small and simple, and should make good
 examples.
 
 
+=head1 MIGRATION
+
+Further performance may be improved through the use of migration.
+
+Migration is a very simple form of parallel processing.  It should scale
+nearly linearly, and is a very effective means of increasing performance.
+
+The idea is, you run multiple populations on multiple machines (one per
+machine).  The only requirement is that each Population has a different
+"hostname" setting.  And that's not really a requirement, it's just useful
+for tracking down which host a critter came from.
+
+When a Population object has finished processing a generation, there is
+a chance that one or more (up to 3) of the surviving critters will be
+written out to a special directory (which acts as an "outbox").
+
+A separate networking program (implemented by Migrator.pm and spawned
+automatically when creating a Population object) may pick up these
+critters and broadcast them to some or all of the other nodes in a cluster
+(deleting them from the "outbox" folder at the same time).  The instances
+of this networking program on the other nodes will receive them, and write
+them out to another special directory (which acts as an "inbox").
+
+When a Population object has finished processing a generation, another
+thing it does is checks the "inbox" directory for any new incoming
+critters.  If they are detected, they are imported into the population
+(and deleted from the "inbox").
+
+Imported critters will compete in the next generation.  If they win,
+they will be involved in the reproduction process and may contribute to
+the local gene pool.
+
+On the server end, a script called "migrationd" is provided to accept
+connections and distribute critters between nodes.  The config file
+specifies which server to connect to.  See the CONFIG FILE section,
+below.
+
+
 =head1 PRACTICAL APPLICATION
 
 So, the purpose is to evolve some nice smart critters, but you're
@@ -151,8 +161,18 @@ evolve or test new critters.
 
 =head1 CONFIG FILE
 
-FIXME: document this fully.
+You can find an example config file ("example.conf") in the source
+tarball.  It contains all of the variables with their default values,
+and descriptions of each.  It lets you configure many important
+parameters about how the evolutionary process works, so you probably
+want to copy and edit it.
 
+This file can be copied to ".ai-evolve-befunge" in your home
+directory, or "/etc/ai-evolve-befunge.conf" for sitewide use.  If both
+files exist, they are both loaded, in such a way that the homedir
+settings supercede the ones from /etc.  If the "AIEVOLVEBEFUNGE"
+environment variable is set, that too is loaded as a config file, and
+its settings take priority over the other files (if any).
 
 =cut
 

@@ -1,12 +1,12 @@
 ---
 name: AI-Evolve-Befunge
-version: 0.01
+version: 0.02
 author:
   - 'Mark Glines <mark@glines.org>'
 abstract: practical evolution of Befunge AI programs
 license: artistic_2
 resources:
-  license: http://opensource.org/licenses/artistic-license-2.0.php
+  license: ~
 requires:
   Algorithm::Evolutionary::Wheel: 0
   Class::Accessor::Fast: 0
@@ -27,7 +27,7 @@ requires:
 provides:
   AI::Evolve::Befunge:
     file: lib/AI/Evolve/Befunge.pm
-    version: 0.01
+    version: 0.02
   AI::Evolve::Befunge::Blueprint:
     file: lib/AI/Evolve/Befunge/Blueprint.pm
   AI::Evolve::Befunge::Board:
@@ -50,7 +50,7 @@ provides:
     file: lib/AI/Evolve/Befunge/Util.pm
   AI::Evolve::Befunge::Util::Config:
     file: lib/AI/Evolve/Befunge/Util/Config.pm
-generated_by: Module::Build version 0.3
+generated_by: Module::Build version 0.31
 meta-spec:
   url: http://module-build.sourceforge.net/META-spec-v1.2.html
   version: 1.2

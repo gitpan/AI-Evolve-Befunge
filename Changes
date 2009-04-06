@@ -1,5 +1,8 @@
 Revision history for Perl extension AI::Evolve::Befunge.
 
+0.03  Tue Feb 10 09:27:05 PST 2009
+  - Update to Language::Befunge 4.10's API, update the version dependency.
+
 0.02  Tue Jan 13 06:27:53 PST 2009
   - Improve the top level POD.
 

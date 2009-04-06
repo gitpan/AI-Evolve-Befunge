@@ -409,36 +409,36 @@ sub new {
     my $cachename = "storagecache-".$$self{dims};
     if(exists($$self{blueprint}{cache})
     && exists($$self{blueprint}{cache}{$cachename})) {
-        $interp->storage($$self{blueprint}{cache}{$cachename}->_copy);
+        $$interp{storage} = $$self{blueprint}{cache}{$cachename}->_copy;
     } else {
         if($$self{dims} > 1) {
             # split code into lines, pages, etc as necessary.
             my @lines;
             my $meas = $$self{codesize}->get_component(0);
             my $dims = $$self{dims};
-            my @terms = ("\n", "\f");
+            my @terms = ("", "\n", "\f");
             push(@terms, "\0" x ($_-2)) for(3..$dims);
 
             push(@lines, substr($$self{code}, 0, $meas, "")) while length $$self{code};
             foreach my $dim (0..$dims-1) {
                 my $offs = 1;
-                $offs *= $meas for (1..$dim);
+                $offs *= $meas for (1..$dim-1);
                 for(my $i = $offs; $i <= scalar @lines; $i += $offs) {
                     $lines[$i-1] .= $terms[$dim];
                 }
             }
-            $$self{code} = join("", @lines) . ' ' x ($meas ** $dims);
+            $$self{code} = join("", @lines);
         }
 
-        $interp->storage->store($$self{code}, $$self{codeoffset});
+        $interp->get_storage->store($$self{code}, $$self{codeoffset});
         # assign our corral size to the befunge space
-        $interp->storage->expand($$self{minsize});
-        $interp->storage->expand($$self{maxsize});
+        $interp->get_storage->expand($$self{minsize});
+        $interp->get_storage->expand($$self{maxsize});
         # save off a copy of this befunge space for later reuse
         $$self{blueprint}{cache} = {} unless exists $$self{blueprint}{cache};
-        $$self{blueprint}{cache}{$cachename} = $interp->storage->_copy;
+        $$self{blueprint}{cache}{$cachename} = $interp->get_storage->_copy;
     }
-    my $storage = $interp->storage;
+    my $storage = $interp->get_storage;
     $$storage{maxsize} = $$self{maxsize};
     $$storage{minsize} = $$self{minsize};
     # store a copy of the Critter in the storage, so _expand (below) can adjust
@@ -575,7 +575,7 @@ Writes the board game state into the Befunge universe.
 
 sub populate {
     my ($self, $board) = @_;
-    my $storage = $$self{interp}->storage;
+    my $storage = $$self{interp}->get_storage;
     $storage->store($board->as_string);
     $$self{interp}{_ai_board} = $board;
     weaken($$self{interp}{_ai_board});

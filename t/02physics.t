@@ -44,7 +44,7 @@ BEGIN { $num_tests += 4 };
 my $part1 =  "00M@" . (" "x12);
 my $play1 =  "01M["
             ."M@#]" . (" "x8);
-my $dier1 =  "1kkq" . (" "x12);
+my $dier1 =  (" "x16);
 my $tier1 =  "00M["
             ."M10]" . (" "x8);
 my $tier2 =  "10M["
@@ -70,8 +70,8 @@ lives_ok(sub{ $test->run_board_game([$cpart1, $cplay1], $board ) }, "a proper ga
 $$test{passable} = 0;
 push_debug(1);
 stdout_like(sub{ $test->run_board_game([$cdier1, $cplay1], $board ) },
-     qr/STDIN \(-2,-4\): Attempt to repeat \('k'\) a repeat instruction \('k'\)/,
-     "killed with a 'kk' error");
+     qr/STDIN \(-4,-4\): infinite loop/,
+     "killed with an infinite loop error");
 pop_debug();
 lives_ok(sub{ $test->run_board_game([$ctier1, $ctier2], $board) }, "a proper game was played");
 lives_ok(sub{ $test->run_board_game([$cpart1, $cpart1], $board) }, "a tie game was played");

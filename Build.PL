@@ -7,7 +7,7 @@ Module::Build->new(
         'Algorithm::Evolutionary::Wheel'               => 0,
         'aliased'                                      => 0,
         'Class::Accessor::Fast'                        => 0,
-        'Language::Befunge'                            => '4.00',
+        'Language::Befunge'                            => '4.10',
         'Language::Befunge::Storage::Generic::Vec::XS' => '0.02',
         'Language::Befunge::Vector::XS'                => '1.1.0',
         'LWP::UserAgent'                               => 0,

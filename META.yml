@@ -1,6 +1,6 @@
 ---
 name: AI-Evolve-Befunge
-version: 0.02
+version: 0.03
 author:
   - 'Mark Glines <mark@glines.org>'
 abstract: practical evolution of Befunge AI programs
@@ -11,7 +11,7 @@ requires:
   Algorithm::Evolutionary::Wheel: 0
   Class::Accessor::Fast: 0
   LWP::UserAgent: 0
-  Language::Befunge: 4.00
+  Language::Befunge: 4.10
   Language::Befunge::Storage::Generic::Vec::XS: 0.02
   Language::Befunge::Vector::XS: 1.1.0
   Parallel::Iterator: 0
@@ -27,7 +27,7 @@ requires:
 provides:
   AI::Evolve::Befunge:
     file: lib/AI/Evolve/Befunge.pm
-    version: 0.02
+    version: 0.03
   AI::Evolve::Befunge::Blueprint:
     file: lib/AI/Evolve/Befunge/Blueprint.pm
   AI::Evolve::Befunge::Board:
@@ -50,7 +50,7 @@ provides:
     file: lib/AI/Evolve/Befunge/Util.pm
   AI::Evolve::Befunge::Util::Config:
     file: lib/AI/Evolve/Befunge/Util/Config.pm
-generated_by: Module::Build version 0.31
+generated_by: Module::Build version 0.32
 meta-spec:
   url: http://module-build.sourceforge.net/META-spec-v1.2.html
   version: 1.2

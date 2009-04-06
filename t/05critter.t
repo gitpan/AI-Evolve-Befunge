@@ -75,6 +75,7 @@ $critter = Critter->new(
 );
 my $rv = $critter->move();
 is($rv->tokens, 1242, "repeat count is accepted");
+
 $critter = Critter->new(
     Blueprint => $bp2,
     Physics   => $ph,
@@ -85,8 +86,9 @@ $critter = Critter->new(
     IterPerTurn => 100,
 );
 $rv = $critter->move();
-is($rv->tokens, 447, "repeat count is rejected");
-$bp2 = Blueprint->new(code => "1kkq", dimensions => 1);
+is($rv->tokens, 449, "repeat count is rejected");
+
+$bp2 = Blueprint->new(code => "    ", dimensions => 1);
 $critter = Critter->new(
     Blueprint => $bp2,
     Physics   => $ph,
@@ -97,7 +99,8 @@ $critter = Critter->new(
 );
 $rv = $critter->move();
 ok($rv->died, "critter died");
-like($rv->fate, qr/Attempt to repeat \('k'\) a repeat/, "double k is detected");
+like($rv->fate, qr/infinite loop/, "infinite loop is detected");
+
 $critter = Critter->new(
     Blueprint => $bp,
     Physics   => $ph,
@@ -169,7 +172,7 @@ $rv = newaebc("aq", 2, 1, Tokens => 60, StackCost => 40)->move();
 is($rv->tokens, 14, 'spush decremented the proper amount');
 ok(!$rv->died, "did not die");
 $rv = newaebc("aq", 2, 1, Tokens => 30, StackCost => 40)->move();
-is($rv->tokens, 22, 'spush bounced');
+is($rv->tokens, 24, 'spush bounced');
 ok(!$rv->died, "did not die");
 BEGIN { $num_tests += 4 };
 
@@ -178,7 +181,7 @@ $rv = newaebc("9{q", 3, 1, Tokens => 50, StackCost => 4)->move();
 is($rv->tokens, 1, 'block_open decremented the proper amount');
 ok(!$rv->died, "did not die");
 $rv = newaebc("9{q", 3, 1, Tokens => 30, StackCost => 4)->move();
-is($rv->tokens, 9, 'block_open bounced');
+is($rv->tokens, 11, 'block_open bounced');
 ok(!$rv->died, "did not die");
 BEGIN { $num_tests += 4 };
 
@@ -187,26 +190,26 @@ $rv = newaebc("1jzq", 4, 1, Tokens => 250, RepeatCost => 200)->move();
 is($rv->tokens, 38, '_op_flow_jump_to_wrap decremented the proper amount');
 ok(!$rv->died, "did not die");
 $rv = newaebc("1jzq", 4, 1, Tokens =>  50, RepeatCost => 200)->move();
-is($rv->tokens, 32, '_op_flow_jump_to_wrap bounced');
+is($rv->tokens, 34, '_op_flow_jump_to_wrap bounced');
 ok(!$rv->died, "did not die");
 BEGIN { $num_tests += 4 };
 
 
 $rv = newaebc("ak1q", 4, 1, Tokens => 150, RepeatCost => 10)->move();
-is($rv->tokens, 18, '_op_flow_repeat_wrap decremented the proper amount');
+is($rv->tokens, 14, '_op_flow_repeat_wrap decremented the proper amount');
 ok(!$rv->died, "did not die");
 $rv = newaebc("ak1q", 4, 1, Tokens => 50, RepeatCost => 10)->move();
-is($rv->tokens, 32, '_op_flow_repeat_wrap bounced');
+is($rv->tokens, 34, '_op_flow_repeat_wrap bounced');
 ok(!$rv->died, "did not die");
 BEGIN { $num_tests += 4 };
 
 
 $rv = newaebc("tq", 2, 1, Tokens => 50, ThreadCost => 10);
 $rv = $rv->move();
-is($rv->tokens, 6, '_op_spawn_ip_wrap decremented the proper amount');
+is($rv->tokens, 8, '_op_spawn_ip_wrap decremented the proper amount');
 ok(!$rv->died, "did not die");
 $rv = newaebc("tq", 2, 1, Tokens => 10, ThreadCost => 10)->move();
-is($rv->tokens, 2, '_op_spawn_ip_wrap bounced');
+is($rv->tokens, 4, '_op_spawn_ip_wrap bounced');
 ok(!$rv->died, "did not die");
 BEGIN { $num_tests += 4 };
 
@@ -221,7 +224,7 @@ BEGIN { $num_tests += 3 };
 
 
 my $befunge = $$critter{interp};
-my $ls = $befunge->storage;
+my $ls = $befunge->get_storage;
 lives_ok{$ls->expand(v(4, 4, 4, 4))} "expand bounds checking";
 dies_ok {$ls->expand(v(4, 4, 4, 5))} "expand bounds checking";
 like($@, qr/out of bounds/, "out of bounds detection");

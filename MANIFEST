@@ -1,7 +1,6 @@
 Build.PL
 Changes
 example.conf
-leakcheck.pl
 lib/AI/Evolve/Befunge.pm
 lib/AI/Evolve/Befunge/Blueprint.pm
 lib/AI/Evolve/Befunge/Board.pm
